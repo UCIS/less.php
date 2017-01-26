@@ -899,7 +899,7 @@ class Less_Functions{
 		}
 
 
-		if( file_exists($filePath) ){
+		if( !stream_is_local($filePath) || file_exists($filePath) ){
 			$buf = @file_get_contents($filePath);
 		}else{
 			$buf = false;
@@ -910,7 +910,7 @@ class Less_Functions{
 		// and the --ieCompat flag is enabled, return a normal url() instead.
 		$DATA_URI_MAX_KB = 32;
 		$fileSizeInKB = round( strlen($buf) / 1024 );
-		if( $fileSizeInKB >= $DATA_URI_MAX_KB ){
+		if( $fileSizeInKB >= $DATA_URI_MAX_KB && !empty(Less_Parser::$options['ieCompat']) ){
 			$url = new Less_Tree_Url( ($filePathNode ? $filePathNode : $mimetypeNode), $this->currentFileInfo);
 			return $url->compile($this);
 		}
